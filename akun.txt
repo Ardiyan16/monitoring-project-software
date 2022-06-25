@@ -1,0 +1,11 @@
+admin
+username	: admin@admin.com
+pass	: admin123
+
+manager
+username	: suyanto@sample.com
+pass	: 123
+
+karyawan
+username	: bagus@gmail.com
+pass	: 123
