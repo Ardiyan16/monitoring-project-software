@@ -36,19 +36,19 @@
 						$desc=str_replace(array("<li>","</li>"), array("",", "), $desc);
 						$prog = $tprog > 0 ? ($cprog/$tprog) * 100 : 0;
 		                $prog = $prog > 0 ?  number_format($prog,2) : $prog;
-		                if($row['pstatus'] == 0 && strtotime(date('Y-m-d')) >= strtotime($row['start_date'])):
+		                if($row['status'] == 0 && strtotime(date('Y-m-d')) >= strtotime($row['start_date'])):
 		                if($prod  > 0  || $cprog > 0)
-		                  $row['pstatus'] = 2;
+		                  $row['status'] = 2;
 		                else
-		                  $row['pstatus'] = 1;
-		                elseif($row['pstatus'] == 0 && strtotime(date('Y-m-d')) > strtotime($row['end_date'])):
-		                $row['pstatus'] = 4;
+		                  $row['status'] = 1;
+		                elseif($row['status'] == 0 && strtotime(date('Y-m-d')) > strtotime($row['end_date'])):
+		                $row['status'] = 4;
 		                endif;
 					?>
 					<tr>
 						<td class="text-center"><?php echo $i++ ?></td>
 						<td>
-							<p><b><?php echo ucwords($row['pname']) ?></b></p>
+							<p><b><?php echo ucwords($row['name']) ?></b></p>
 						</td>
 						<td>
 							<p><b><?php echo ucwords($row['task']) ?></b></p>
@@ -89,7 +89,7 @@
 		                      Aksi
 		                    </button>
 			                    <div class="dropdown-menu" style="">
-			                      <a class="dropdown-item new_productivity" href="<?php echo base_url("user/manage_progress?id=".$row['id']."&pid=".+$row['pid']."&task=".$row['task']);?>">Tambah Kegiatan</a>
+			                      <a class="dropdown-item new_productivity" href="<?php echo base_url("user/manage_progress?id=".$row['id']."&id=".+$row['id']."&task=".$row['task']);?>">Tambah Kegiatan</a>
 								</div>
 						</td>
 					</tr>	
