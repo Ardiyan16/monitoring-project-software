@@ -1,9 +1,11 @@
-<?php 
+<?php
 if (isset($qry)) {
-	foreach($qry as $k){
+	foreach ($qry as $k) {
 		$id = $k['id'];
 		$pid = $k['project_id'];
 		$task = $k['task'];
+		$start_date = $k['start_date'];
+		$end_date = $k['end_date'];
 		$description = $k['description'];
 		$status = $k;
 	}
@@ -12,12 +14,24 @@ if (isset($qry)) {
 }
 ?>
 <div class="container-fluid">
-	<form action="<?php echo base_url('user/add_task');?>" id="manage_task" method="post">
+	<form action="<?php echo base_url('user/add_task'); ?>" id="manage_task" method="post">
 		<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 		<input type="hidden" name="project_id" value="<?php echo isset($pid) ? $pid : '' ?>">
 		<div class="form-group">
 			<label for="">Nama Task</label>
 			<input type="text" class="form-control form-control-sm" name="task" value="<?php echo isset($task) ? $task : '' ?>" required>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="" class="control-label">Waktu Mulai</label>
+				<input type="date" class="form-control form-control-sm" autocomplete="off" name="start_date" value="<?php echo isset($start_date) ? date("Y-m-d", strtotime($start_date)) : '' ?>">
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="" class="control-label">Waktu Selesai</label>
+				<input type="date" class="form-control form-control-sm" autocomplete="off" name="end_date" value="<?php echo isset($end_date) ? date("Y-m-d", strtotime($end_date)) : '' ?>">
+			</div>
 		</div>
 		<div class="form-group">
 			<label for="">Deskripsi</label>
@@ -35,7 +49,7 @@ if (isset($qry)) {
 		</div>
 		<div class="col-lg-12 text-right justify-content-center d-flex">
 			<button class="btn btn-primary mr-2">Simpan</button>
-			<button class="btn btn-secondary" type="button" onclick="location.href = '<?php echo base_url('User/task_list');?>'">Batal</button>
+			<button class="btn btn-secondary" type="button" onclick="location.href = '<?php echo base_url('User/task_list'); ?>'">Batal</button>
 		</div>
 	</form>
 </div>

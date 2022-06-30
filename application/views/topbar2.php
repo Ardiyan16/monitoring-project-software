@@ -48,6 +48,31 @@
                 </div>
             </li>
         <?php } ?>
+        <?php if ($this->session->userdata('role') == 2) { ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="fa fa-bell"></i>
+                    <?php if ($count_notif > 0) { ?>
+                        <span class="badge badge-danger navbar-badge"><?= $count_notif ?></span>
+                    <?php } ?>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <?php if ($count_notif == 0) { ?>
+                        <span class="dropdown-item dropdown-header">Tidak Ada Notifikasi</span>
+                    <?php } ?>
+                    <?php if ($count_notif > 0) { ?>
+                        <span class="dropdown-item dropdown-header"><?= $count_notif ?> Notifikasi</span>
+                    <?php } ?>
+                    <div class="dropdown-divider"></div>
+                    <?php foreach ($notif as $ntf) { ?>
+                        <a href="#tampilnotif1<?= $ntf->id ?>" data-toggle="modal" class="dropdown-item">
+                            <i class="fas fa-briefcase mr-2"></i> <?= $ntf->keterangan ?>
+                        </a>
+                    <?php } ?>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </li>
+        <?php } ?>
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>

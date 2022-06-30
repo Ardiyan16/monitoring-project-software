@@ -20,7 +20,7 @@ if (isset($qry)) {
 <div class="container-fluid">
 	<form action="<?php echo base_url('user/add_progress');?>" id="manage-progress" method="post">
 		<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
-		<input type="hidden" name="project_id" value="<?php echo isset($pid) ? $pid : '' ?>">
+		<input type="hidden" name="project_id" value="<?= $pid ?>">
 		<div class="col-lg-12">
 			<div class="row">
 				<div class="col-md-5">

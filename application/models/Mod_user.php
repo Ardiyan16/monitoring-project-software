@@ -22,10 +22,23 @@ class Mod_user extends CI_Model
     $this->db->select('project_list.id pid, project_list.kd_project, project_list.name, project_list.description, project_list.status, project_list.start_date, project_list.end_date, project_list.manager_id, project_list.date_created, detail_project.*');
     $this->db->from('project_list');
     $this->db->join('detail_project', 'project_list.kd_project = detail_project.kode_project', 'left outer');
+    $this->db->where('project_list.status < 5');
     $this->db->where('id_users', $id);
     return $this->db->get()->result_array();
-    // $query = $this->db->query("SELECT * FROM `project_list` JOIN `detail_project` ON `project_list`.`kd_project` = `detail_project`.`kode_project` where kd_project = " . $id)->result_array();
+    // $query = $this->db->query("SELECT project_list.id pid, project_list.kd_project, project_list.name, project_list.description, project_list.status, project_list.start_date, project_list.end_date, project_list.manager_id, project_list.date_created, detail_project.* FROM project_list JOIN detail_project ON project_list.kd_project = detail_project.kode_project WHERE project_list.status < 5 AND detail_project.id_users = '$id';")->result_array();
     // return $query;
+  }
+
+  public function task_get($id_user)
+  {
+    $this->db->select('task_list.task, task_list.end_date ed, task_list.description, project_list.*, detail_project.*');
+    $this->db->from('task_list');
+    $this->db->join('project_list', 'task_list.project_id = project_list.kd_project');
+    $this->db->join('detail_project', 'project_list.kd_project = detail_project.kode_project');
+    $this->db->where('id_users', $id_user);
+    $this->db->where('project_list.status < 5');
+    $this->db->where('task_list.status < 3');
+    return $this->db->get()->result_array();
   }
 
   public function task_list($id)
@@ -107,6 +120,23 @@ class Mod_user extends CI_Model
     // return $this->db->query("SELECT * FROM `project_list` JOIN `detail_project` ON `project_list`.`kd_project` = `detail_project`.`kode_project` $where ORDER BY `date_created` ASC")->result_array();
   }
 
+  public function project_list_manager($id)
+  {
+    $this->db->select('*');
+    $this->db->from('project_list');
+    $this->db->where('manager_id', $id);
+    return $this->db->get()->result_array();
+  }
+
+  public function project_list_employe($id)
+  {
+    $this->db->select('*');
+    $this->db->from('project_list');
+    $this->db->join('detail_project', 'project_list.kd_project = detail_project.kode_project');
+    $this->db->where('detail_project.id_users', $id);
+    return $this->db->get()->result_array();
+  }
+
   public function project_list_alls()
   {
     return $this->db->query("SELECT * FROM project_list order by name asc")->result();
@@ -152,7 +182,7 @@ class Mod_user extends CI_Model
 
   public function task_list_totals()
   {
-    $this->db->select('task_list.*, project_list.name, project_list.start_date, project_list.end_date, project_list.status pstatus');
+    $this->db->select('task_list.*, project_list.name, project_list.status pstatus');
     $this->db->from('task_list');
     $this->db->join('project_list', 'task_list.project_id = project_list.kd_project');
     return $this->db->get()->result_array();
@@ -249,7 +279,7 @@ class Mod_user extends CI_Model
     return $this->db->insert('project_list', $data);
   }
 
-  public function edit_project($name, $description, $status, $start_date, $end_date, $manager_id, $user_ids, $id)
+  public function edit_project($name, $description, $status, $start_date, $end_date, $manager_id, $id)
   {
     return $this->db->query("UPDATE project_list SET name = '$name', description = '$description', status = '$status', start_date = '$start_date', end_date = '$end_date', manager_id = '$manager_id' WHERE id = '$id'");
   }
@@ -279,9 +309,9 @@ class Mod_user extends CI_Model
     return $this->db->insert('task_list', $data);
   }
 
-  public function edit_task($task, $description, $status, $id)
+  public function edit_task($task, $start_date, $end_date, $description, $status, $id)
   {
-    return $this->db->query("UPDATE task_list SET `task`='$task',`description`='$description',`status`='$status' WHERE `id` = '$id'");
+    return $this->db->query("UPDATE task_list SET `task`='$task',`start_date`='$start_date',`end_date`='$end_date',`description`='$description',`status`='$status' WHERE `id` = '$id'");
   }
 
   public function delete_task($id)
@@ -428,12 +458,15 @@ class Mod_user extends CI_Model
     return $this->db->get()->result();
   }
 
-  public function get_notif2()
+  public function get_notif2($id)
   {
     $this->db->select('notifikasi2.*, task_list.id tid, task_list.task, task_list.status, task_list.description');
     $this->db->from('notifikasi2');
     $this->db->join('task_list', 'notifikasi2.id_task = task_list.id');
+    $this->db->join('project_list', 'task_list.project_id = project_list.kd_project');
+    $this->db->join('detail_project', 'project_list.kd_project = detail_project.kode_project');
     $this->db->where('task_list.status', 1);
+    $this->db->where('detail_project.id_users', $id);
     return $this->db->get()->result();
   }
 
@@ -446,12 +479,15 @@ class Mod_user extends CI_Model
     return $this->db->get()->row()->jml;
   }
 
-  public function count_notif2()
+  public function count_notif2($id)
   {
     $this->db->select('COUNT(id_task) as jml');
     $this->db->from('notifikasi2');
     $this->db->join('task_list', 'notifikasi2.id_task = task_list.id');
-    $this->db->where('status', 1);
+    $this->db->join('project_list', 'task_list.project_id = project_list.kd_project');
+    $this->db->join('detail_project', 'project_list.kd_project = detail_project.kode_project');
+    $this->db->where('task_list.status', 1);
+    $this->db->where('detail_project.id_users', $id);
     return $this->db->get()->row()->jml;
   }
 
@@ -459,4 +495,9 @@ class Mod_user extends CI_Model
   {
     $this->db->query("UPDATE `notifikasi` SET `status`= '1' WHERE notifikasi.id ='$id'");
   }
+
+  // public function notif_manajer()
+  // {
+  //   $this
+  // }
 }

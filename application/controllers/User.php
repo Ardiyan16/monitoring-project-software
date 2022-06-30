@@ -27,7 +27,11 @@ class User extends CI_Controller
 		// } elseif ($this->session->userdata('role') == 3) {
 		// 	$where2 = " where concat('[',REPLACE(id_users,',','],['),']') LIKE '%[{$this->session->userdata('id')}]%' ";
 		// }
+		$id = $this->session->userdata('id');
 		$result['qry'] = $this->mod_user->project_list_all();
+		$result['prj_manager'] = $this->mod_user->project_list_manager($id);
+		$result['prj_employe'] = $this->mod_user->project_list_employe($id);
+
 		// foreach ($result['qry'] as $row) {
 		// 	$id = $row['id'];
 		// 	$result['tprog'] = $this->mod_user->task_list_all($id);
@@ -37,20 +41,20 @@ class User extends CI_Controller
 		$result['project_list'] = $this->mod_user->project_list_total();
 		$result['task_list'] = $this->mod_user->task_list_total();
 		$result['data'] = $this->mod_user->project_data();
-		$id = $this->session->userdata('id');
 		$result['notif'] = $this->mod_user->get_notif($id);
 		$result['notif2'] = $this->mod_user->get_notif($id);
 		$result['count_notif'] = $this->mod_user->count_notif($id);
-		$result['notif_task'] = $this->mod_user->get_notif2();
-		$result['notif_task2'] = $this->mod_user->get_notif2();
-		$result['count_notif2'] = $this->mod_user->count_notif2();
+		$result['notif_task'] = $this->mod_user->get_notif2($id);
+		$result['notif_task2'] = $this->mod_user->get_notif2($id);
+		$result['count_notif2'] = $this->mod_user->count_notif2($id);
 		$result['prj'] = $this->mod_user->project_list2($id);
-		// var_dump($result['prj']);
+		$result['tsk'] = $this->mod_user->task_get($id);
+		// var_dump($result['prj_employe']);
 		// foreach($result['prj'] as $project) {
 		// 	$tgl_akhir = $project['end_date'];
 		// 	$peringatan[] = date('Y-m-d', strtotime('-3 days', strtotime($tgl_akhir)));
 		// }
-		// // var_dump($peringatan);
+		// var_dump($result['notif_task']);
 		// $result['peringatan'] = $peringatan;
 		$this->template2->views('home', $result);
 	}
@@ -59,13 +63,14 @@ class User extends CI_Controller
 	{
 		$result['page'] = 'Lihat Project';
 		$result['qry'] = $this->mod_user->project_list($id);
+		// var_dump($result['qry']);
 		$result['tprog'] = $this->mod_user->task_list($id);
 		$result['cprog'] = $this->mod_user->task_lists($id);
 		$result['prod'] = $this->mod_user->user_productivity($id);
 		foreach ($result['qry'] as $row) {
 			$manager_id = $row['manager_id'];
 			$user_ids = $row['id_users'];
-			$project_id = $row['id'];
+			$project_id = $row['kd_project'];
 		}
 		if (empty($manager_id)) {
 			$result['manager'] = $this->mod_user->manager_not_set($manager_id);
@@ -79,6 +84,7 @@ class User extends CI_Controller
 		} else {
 			$result['members'] = $this->mod_user->member_not_set($user_ids);
 		}
+		$result['id_manager'] = $this->session->userdata('id');
 		$this->template->views('view_project', $result);
 	}
 
@@ -294,6 +300,14 @@ class User extends CI_Controller
 				$this->mod_user->add_notif($notif);
 				// var_dump($notif);
 			}
+			$notif_manajer = array(
+				'kode_project' => $lasId[0]['kd_project'],
+				'id_user' => $manager_id,
+				'keterangan' => 'anda memperoleh project baru',
+				'waktu' => $date_created,
+				'status' => 0
+			);
+			$this->mod_user->add_notif($notif_manajer);
 		} else {
 			$save = $this->mod_user->edit_project($name, $description, $status, $start_date, $end_date, $manager_id, $id);
 		}
@@ -335,12 +349,16 @@ class User extends CI_Controller
 		$id = $this->input->post('id');
 		$project_id = $this->input->post('project_id');
 		$task = $this->input->post('task');
+		$start_date = $this->input->post('start_date');
+		$end_date = $this->input->post('end_date');
 		$description = $this->input->post('description');
 		$status = $this->input->post('status');
 		$date_created = date("Y-m-d h:i:s");
 		$data = array(
 			'project_id' => $project_id,
 			'task' => $task,
+			'start_date' => $start_date,
+			'end_date' => $end_date,
 			'description' => $description,
 			'status' => $status,
 			'date_created' => $date_created
@@ -355,7 +373,7 @@ class User extends CI_Controller
 			);
 			$this->db->insert('notifikasi2', $notif);
 		} else {
-			$save = $this->mod_user->edit_task($task, $description, $status, $id);
+			$save = $this->mod_user->edit_task($task, $start_date, $end_date, $description, $status, $id);
 		}
 		if ($save) {
 			redirect('user/view_project/' . $project_id);
@@ -408,7 +426,7 @@ class User extends CI_Controller
 	public function delete_progress()
 	{
 		$id = $this->input->get('id');
-		$pid = $this->input->get('pid');
+		$pid = $this->input->get('kd_project');
 		$delete = $this->mod_user->delete_progress($id);
 		if ($delete) {
 			redirect('user/view_project/' . $pid);

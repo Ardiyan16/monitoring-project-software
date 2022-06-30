@@ -125,9 +125,11 @@ endif;
 						</div>
 					<?php endif; ?>
 					<?php if ($this->session->userdata('role') == 2) : ?>
+						<?php if($manager_id == $id_manager) { ?>
 						<div class="card-tools">
 							<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_task" href="<?php echo base_url("user/manage_task?kd_project=" . $kd_prj); ?>"><i class="fa fa-plus"></i> Task Baru</a>
 						</div>
+						<?php } ?>
 					<?php endif; ?>
 				</div>
 				<div class="card-body p-0">
@@ -204,7 +206,7 @@ endif;
 				<div class="card-header">
 					<b>Member Progres/Kegiatan</b>
 					<div class="card-tools">
-						<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?pid=' . $id); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
+						<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?kd_project=' . $kd_prj); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -220,9 +222,9 @@ endif;
 											<i class="fa fa-ellipsis-v"></i>
 										</span>
 										<div class="dropdown-menu">
-											<a class="dropdown-item manage_progress" href="<?php echo base_url("user/manage_progress?id=" . $row['id'] . "&pid=" . +$id); ?>">Edit</a>
+											<a class="dropdown-item manage_progress" href="<?php echo base_url("user/manage_progress?id=" . $row['id'] . "&kd_project=" . $kd_prj); ?>">Edit</a>
 											<div class="dropdown-divider"></div>
-											<a class="dropdown-item delete_progress" href="<?php echo base_url("user/delete_progress?id=" . $row['id'] . "&pid=" . +$id); ?>">Hapus</a>
+											<a class="dropdown-item delete_progress" href="<?php echo base_url("user/delete_progress?id=" . $row['id'] . "&kd_project=" . $kd_prj); ?>">Hapus</a>
 										</div>
 									</span>
 								<?php endif; ?>
