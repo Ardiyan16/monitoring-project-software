@@ -13,6 +13,7 @@ if (isset($qry)) {
 } elseif (isset($task_ids)) {
 	$pid = $project_id;
 	$tid = $task_ids;
+	// echo $pid;
 } else {
 	$pid = $project_id;
 }

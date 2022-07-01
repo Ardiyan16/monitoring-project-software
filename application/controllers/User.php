@@ -183,10 +183,11 @@ class User extends CI_Controller
 			$tid = $this->mod_user->get_tid($id);
 			foreach ($tid as $row) {
 				$task_id = $row['id'];
+				$kd_project = $row['project_id'];
 			}
 			$result['page'] = 'Tambah Produktif';
 
-			$result['project_id'] = $pid;
+			$result['project_id'] = $kd_project;
 			$result['task_ids'] = $task_id;
 		} elseif (isset($id)) {
 			$result['qry'] = $this->mod_user->manage_progress($id);
