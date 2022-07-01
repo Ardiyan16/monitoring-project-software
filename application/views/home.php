@@ -105,9 +105,9 @@
                 $stat = array("Di Tunda", "Mulai", "Dalam Proses", "Di Tahan", "Terlambat", "Selesai");
                 foreach ($qry as $row) {
                   $prog = 0;
-                  $tprog = $this->mod_user->task_list_all($row['id']);
-                  $cprog = $this->mod_user->task_lists_all($row['id']);
-                  $prod = $this->mod_user->produktif($row['id']);
+                  $tprog = $this->mod_user->task_list_all($row['kd_project']);
+                  $cprog = $this->mod_user->task_lists_all($row['kd_project']);
+                  $prod = $this->mod_user->produktif($row['kd_project']);
                   $prog = $tprog > 0 ? ($cprog / $tprog) * 100 : 0;
                   $prog = $prog > 0 ?  number_format($prog, 2) : $prog;
                   if ($row['status'] == 0 && strtotime(date('Y-m-d')) >= strtotime($row['start_date'])) :
@@ -177,9 +177,9 @@
                 $stat = array("Di Tunda", "Mulai", "Dalam Proses", "Di Tahan", "Terlambat", "Selesai");
                 foreach ($prj_manager as $row) {
                   $prog = 0;
-                  $tprog = $this->mod_user->task_list_all($row['id']);
-                  $cprog = $this->mod_user->task_lists_all($row['id']);
-                  $prod = $this->mod_user->produktif($row['id']);
+                  $tprog = $this->mod_user->task_list_all($row['kd_project']);
+                  $cprog = $this->mod_user->task_lists_all($row['kd_project']);
+                  $prod = $this->mod_user->produktif($row['kd_project']);
                   $prog = $tprog > 0 ? ($cprog / $tprog) * 100 : 0;
                   $prog = $prog > 0 ?  number_format($prog, 2) : $prog;
                   if ($row['status'] == 0 && strtotime(date('Y-m-d')) >= strtotime($row['start_date'])) :
@@ -249,9 +249,9 @@
                 $stat = array("Di Tunda", "Mulai", "Dalam Proses", "Di Tahan", "Terlambat", "Selesai");
                 foreach ($prj_employe as $row) {
                   $prog = 0;
-                  $tprog = $this->mod_user->task_list_all($row['id']);
-                  $cprog = $this->mod_user->task_lists_all($row['id']);
-                  $prod = $this->mod_user->produktif($row['id']);
+                  $tprog = $this->mod_user->task_list_all($row['kd_project']);
+                  $cprog = $this->mod_user->task_lists_all($row['kd_project']);
+                  $prod = $this->mod_user->produktif($row['kd_project']);
                   $prog = $tprog > 0 ? ($cprog / $tprog) * 100 : 0;
                   $prog = $prog > 0 ?  number_format($prog, 2) : $prog;
                   if ($row['status'] == 0 && strtotime(date('Y-m-d')) >= strtotime($row['start_date'])) :

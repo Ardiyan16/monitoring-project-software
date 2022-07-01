@@ -26,10 +26,10 @@
                   $name = $row->name;
                   $end_date = $row->end_date;
                   $status = $row->status;
-                  $tprog = $this->mod_user->task_list($row->id);
+                  $tprog = $this->mod_user->task_list($row->kd_project);
                   // $tprog = $this->db->query("SELECT * FROM task_list where project_id = $row->id")->num_rows();
-                  $cprog = $this->mod_user->task_lists($row->id);
-                  $prod = $this->mod_user->user_productivity($row->id);
+                  $cprog = $this->mod_user->task_lists($row->kd_project);
+                  $prod = $this->mod_user->user_productivity($row->kd_project);
                   $prog = $tprog > 0 ? ($cprog/$tprog) * 100 : 0;
                   $prog = $prog > 0 ?  number_format($prog,2) : $prog;
                   if($status == 0 && strtotime(date('Y-m-d')) >= strtotime($row->start_date)):
@@ -40,11 +40,11 @@
                   elseif($status == 0 && strtotime(date('Y-m-d')) > strtotime($row->end_date)):
                     $status = 4;
                   endif;
-                  $tasks = $this->mod_user->task_order($row->id);
-                  $progress = $this->mod_user->progress($row->id);
-                  $duration = $this->mod_user->duration($row->id);
+                  $tasks = $this->mod_user->task_order($row->kd_project);
+                  $progress = $this->mod_user->progress($row->kd_project);
+                  $duration = $this->mod_user->duration($row->kd_project);
                   if ($duration > 0) {
-                    $dur = $this->mod_user->dur($row->id);
+                    $dur = $this->mod_user->dur($row->kd_project);
                     foreach ($dur as $row ) {
                       $durations = $row['duration'];
                     }

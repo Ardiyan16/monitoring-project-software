@@ -93,6 +93,7 @@ class Mod_user extends CI_Model
 
   public function progress($id)
   {
+    // $this->db->select()
     $query = $this->db->query("SELECT p.*,concat(u.firstname,' ',u.lastname) as uname,t.task FROM user_productivity p inner join user u on u.id = p.user_id inner join task_list t on t.id = p.task_id where p.project_id = '$id' order by unix_timestamp(p.date_created) desc ")->result_array();
     return $query;
   }
@@ -231,12 +232,12 @@ class Mod_user extends CI_Model
 
   public function duration($id)
   {
-    return $this->db->query("SELECT sum(time_rendered) as duration FROM user_productivity where project_id = $id")->num_rows();
+    return $this->db->query("SELECT sum(time_rendered) as duration FROM user_productivity where project_id = '$id'")->num_rows();
   }
 
   public function dur($id)
   {
-    return $this->db->query("SELECT sum(time_rendered) as duration FROM user_productivity where project_id = $id")->result_array();
+    return $this->db->query("SELECT sum(time_rendered) as duration FROM user_productivity where project_id = '$id'")->result_array();
   }
 
   public function manage_account($id)
@@ -430,7 +431,7 @@ class Mod_user extends CI_Model
   {
     $sql = $this->db->select('kd_project');
     $sql = $this->db->from('project_list');
-    $sql = $this->db->order_by('kd_project', 'desc');
+    $sql = $this->db->order_by('id', 'desc');
     $sql = $this->db->limit(1);
     $sql = $this->db->get();
 
@@ -495,6 +496,23 @@ class Mod_user extends CI_Model
   {
     $this->db->query("UPDATE `notifikasi` SET `status`= '1' WHERE notifikasi.id ='$id'");
   }
+
+  public function tim_produksi($id)
+  {
+    $this->db->select('*');
+    $this->db->from('detail_project');
+    $this->db->join('user', 'user.id = detail_project.id_users');
+    $this->db->where('kode_project', $id);
+    return $this->db->get()->result();
+  }
+
+  // public function detail_project($id)
+  // {
+  //   $this->db->select('*');
+  //   $this->db->from('detail_project');
+  //   $this->db->where('kode_project', $id);
+  //   return $this->db->get()->result_array();
+  // }
 
   // public function notif_manajer()
   // {

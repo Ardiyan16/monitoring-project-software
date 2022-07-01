@@ -32,12 +32,13 @@ class User extends CI_Controller
 		$result['prj_manager'] = $this->mod_user->project_list_manager($id);
 		$result['prj_employe'] = $this->mod_user->project_list_employe($id);
 
-		// foreach ($result['qry'] as $row) {
-		// 	$id = $row['id'];
-		// 	$result['tprog'] = $this->mod_user->task_list_all($id);
-		// 	$result['cprog'] = $this->mod_user->task_lists_all($id);
-		// 	$result['prod'] = $this->mod_user->produktif($id);
-		// }
+		foreach ($result['qry'] as $row) {
+			$id = $row['kd_project'];
+			// var_dump($id);
+			$result['tprog'] = $this->mod_user->task_list_all($id);
+			$result['cprog'] = $this->mod_user->task_lists_all($id);
+			$result['prod'] = $this->mod_user->produktif($id);
+		}
 		$result['project_list'] = $this->mod_user->project_list_total();
 		$result['task_list'] = $this->mod_user->task_list_total();
 		$result['data'] = $this->mod_user->project_data();
@@ -63,6 +64,7 @@ class User extends CI_Controller
 	{
 		$result['page'] = 'Lihat Project';
 		$result['qry'] = $this->mod_user->project_list($id);
+		$result['qry2'] = $this->mod_user->project_list($id);
 		// var_dump($result['qry']);
 		$result['tprog'] = $this->mod_user->task_list($id);
 		$result['cprog'] = $this->mod_user->task_lists($id);
@@ -79,11 +81,7 @@ class User extends CI_Controller
 		}
 		$result['tasks'] = $this->mod_user->task_order($id);
 		$result['progress'] = $this->mod_user->progress($id);
-		if (!empty($user_ids)) {
-			$result['members'] = $this->mod_user->member($user_ids);
-		} else {
-			$result['members'] = $this->mod_user->member_not_set($user_ids);
-		}
+		$result['tim_produksi'] = $this->mod_user->tim_produksi($id);
 		$result['id_manager'] = $this->session->userdata('id');
 		$this->template->views('view_project', $result);
 	}
@@ -179,7 +177,7 @@ class User extends CI_Controller
 	public function manage_progress()
 	{
 		$id = $this->input->get('id'); // id progress
-		$pid = $this->input->get('pid'); // id project
+		$pid = $this->input->get('kd_project'); // id project
 		$task = $this->input->get('task'); // nama task
 		if (isset($task)) {
 			$tid = $this->mod_user->get_tid($id);
@@ -195,7 +193,7 @@ class User extends CI_Controller
 			$result['page'] = 'Edit Produktif';
 		} else {
 			$result['page'] = 'Tambah Produktif';
-
+			// $result['qry'] = $this->mod_user->manage_progress($pid);
 			$result['tasks'] = $this->mod_user->task_list_for_manage($pid);
 			$result['project_id'] = $pid;
 		}
@@ -308,6 +306,7 @@ class User extends CI_Controller
 				'status' => 0
 			);
 			$this->mod_user->add_notif($notif_manajer);
+			// var_dump($lasId[0]['kd_project']);
 		} else {
 			$save = $this->mod_user->edit_project($name, $description, $status, $start_date, $end_date, $manager_id, $id);
 		}
@@ -383,7 +382,7 @@ class User extends CI_Controller
 	public function delete_task()
 	{
 		$id = $this->input->get('id');
-		$pid = $this->input->get('pid');
+		$pid = $this->input->get('kd_project');
 		$delete = $this->mod_user->delete_task($id);
 		if ($delete) {
 			redirect('user/view_project/' . $pid);

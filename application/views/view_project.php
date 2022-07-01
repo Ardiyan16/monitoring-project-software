@@ -11,6 +11,7 @@ foreach ($qry as $k => $v) {
 	$manager_id = $v['manager_id'];
 	$id = $v['pid'];
 	$kd_prj = $v['kd_project'];
+	$id_users = $v['id_users'];
 }
 $prog = $tprog > 0 ? ($cprog / $tprog) * 100 : 0;
 $prog = $prog > 0 ?  number_format($prog, 2) : $prog;
@@ -22,6 +23,7 @@ if ($status == 0 && strtotime(date('Y-m-d')) >= strtotime($start_date)) :
 elseif ($status == 0 && strtotime(date('Y-m-d')) > strtotime($end_date)) :
 	$status = 4;
 endif;
+// echo $this->session->userdata('id');
 ?>
 <div class="col-lg-12">
 	<div class="row">
@@ -99,18 +101,12 @@ endif;
 				</div>
 				<div class="card-body">
 					<ul class="users-list clearfix">
-						<?php
-						if (!empty($user_ids)) :
-							foreach ($members as $row) :
-						?>
-								<li>
-									<a class="users-list-name" href="javascript:void(0)"><?php echo ucwords($row['name']) ?></a>
-									<!-- <span class="users-list-date">Today</span> -->
-								</li>
-						<?php
-							endforeach;
-						endif;
-						?>
+						<?php foreach ($tim_produksi as $tp) { ?>
+							<li>
+								<a class="users-list-name" href="javascript:void(0)"><?php echo $tp->firstname ?> <?= $tp->lastname ?></a>
+								<!-- <span class="users-list-date">Today</span> -->
+							</li>
+						<?php } ?>
 					</ul>
 				</div>
 			</div>
@@ -125,10 +121,10 @@ endif;
 						</div>
 					<?php endif; ?>
 					<?php if ($this->session->userdata('role') == 2) : ?>
-						<?php if($manager_id == $id_manager) { ?>
-						<div class="card-tools">
-							<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_task" href="<?php echo base_url("user/manage_task?kd_project=" . $kd_prj); ?>"><i class="fa fa-plus"></i> Task Baru</a>
-						</div>
+						<?php if ($manager_id == $id_manager) { ?>
+							<div class="card-tools">
+								<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_task" href="<?php echo base_url("user/manage_task?kd_project=" . $kd_prj); ?>"><i class="fa fa-plus"></i> Task Baru</a>
+							</div>
 						<?php } ?>
 					<?php endif; ?>
 				</div>
@@ -185,7 +181,14 @@ endif;
 												<?php if ($this->session->userdata('role') != 3) : ?>
 													<a class="dropdown-item edit_task" href="<?php echo base_url("user/manage_task?id=" . $row['id'] . "&pid=" . +$id); ?>">Edit</a>
 													<div class="dropdown-divider"></div>
-													<a class="dropdown-item delete_task" href="<?php echo base_url("user/delete_task?id=" . $row['id'] . "&pid=" . +$id); ?>">Hapus</a>
+													<a class="dropdown-item delete_task" href="<?php echo base_url("user/delete_task?id=" . $row['id'] . "&kd_project=" . $kd_prj); ?>">Hapus</a>
+												<?php endif; ?>
+												<?php if ($this->session->userdata('role') == 2) : ?>
+													<?php if ($manager_id == $id_manager) { ?>
+														<a class="dropdown-item edit_task" href="<?php echo base_url("user/manage_task?id=" . $row['id'] . "&pid=" . +$id); ?>">Edit</a>
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item delete_task" href="<?php echo base_url("user/delete_task?id=" . $row['id'] . "&kd_project=" . $kd_prj); ?>">Hapus</a>
+													<?php } ?>
 												<?php endif; ?>
 											</div>
 										</td>
@@ -205,9 +208,27 @@ endif;
 			<div class="card">
 				<div class="card-header">
 					<b>Member Progres/Kegiatan</b>
-					<div class="card-tools">
-						<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?kd_project=' . $kd_prj); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
-					</div>
+					<?php if ($this->session->userdata('role') == 1) : ?>
+						<div class="card-tools">
+							<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?kd_project=' . $kd_prj); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
+						</div>
+					<?php endif; ?>
+					<?php if ($this->session->userdata('role') == 2) : ?>
+						<?php if ($manager_id == $id_manager) { ?>
+							<div class="card-tools">
+								<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?kd_project=' . $kd_prj); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
+							</div>
+						<?php } ?>
+					<?php endif; ?>
+					<?php if ($this->session->userdata('role') == 3) : ?>
+						<?php foreach ($qry2 as $q) { ?>
+							<?php if ($q['id_users'] == $id_manager) { ?>
+								<div class="card-tools">
+									<a class="btn btn-primary bg-gradient-primary btn-sm" type="button" id="new_productivity" href="<?php echo base_url('user/manage_progress?kd_project=' . $kd_prj); ?>"><i class="fa fa-plus"></i> Produktif Baru</a>
+								</div>
+							<?php } ?>
+						<?php } ?>
+					<?php endif; ?>
 				</div>
 				<div class="card-body">
 					<?php
