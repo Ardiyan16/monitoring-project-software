@@ -32,13 +32,13 @@ class User extends CI_Controller
 		$result['prj_manager'] = $this->mod_user->project_list_manager($id);
 		$result['prj_employe'] = $this->mod_user->project_list_employe($id);
 
-		foreach ($result['qry'] as $row) {
-			$id = $row['kd_project'];
-			// var_dump($id);
-			$result['tprog'] = $this->mod_user->task_list_all($id);
-			$result['cprog'] = $this->mod_user->task_lists_all($id);
-			$result['prod'] = $this->mod_user->produktif($id);
-		}
+		// foreach ($result['qry'] as $row) {
+		// 	$id = $row['kd_project'];
+		// 	// var_dump($id);
+		// 	$result['tprog'] = $this->mod_user->task_list_all($id);
+		// 	$result['cprog'] = $this->mod_user->task_lists_all($id);
+		// 	$result['prod'] = $this->mod_user->produktif($id);
+		// }
 		$result['project_list'] = $this->mod_user->project_list_total();
 		$result['task_list'] = $this->mod_user->task_list_total();
 		$result['data'] = $this->mod_user->project_data();
